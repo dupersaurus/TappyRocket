@@ -1,0 +1,17 @@
+{
+  "name": "TappyRocket",
+  "version": "0.0.1",
+  "dependencies": {
+    "phaser": "^2.6.2",
+    "systemjs": "^0.19.31"
+  },
+  "devDependencies": {
+    "del": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-if": "^2.0.1",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-typescript": "^2.13.6",
+    "minimist": "^1.2.0",
+    "typescript": "^1.8.10"
+  }
+}
