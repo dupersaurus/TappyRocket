@@ -30,16 +30,16 @@ export class GameManager extends Phaser.State {
 
 	create() {
 		this._textureManager = new TextureManager(this);
-		this._groundPlane = this.game.add.graphics(0, 550, this.world);
+		this._groundPlane = this.game.add.graphics(0, 0, this.world);
 
 		this._groundPlane.beginFill(0x55bb00);
-		this._groundPlane.drawRect(0, 0, 400, 100);
+		this._groundPlane.drawRect(0, 0, 400, 500);
 		this._groundPlane.endFill();
 
-		var pad = this.game.add.sprite(this.game.width / 2 - 25, 495, this._textureManager.getTexture("landingPad"), this._groundPlane);
+		var pad = this.game.add.sprite(this.game.width / 2 - 25, -55, this._textureManager.getTexture("landingPad"), this._groundPlane);
 
 		this._rocket = new RocketShip(this);
-		this._rocket.setFloorPosition(this.game.width / 2, 545);
+		this._rocket.setFloorPosition(this.game.width / 2, -5);
 
 		this.game.camera.bounds = null;
 
@@ -57,9 +57,9 @@ export class GameManager extends Phaser.State {
 
 		if (this._rocket.y <= 300) {
 			this._rocket.cameraFollow(this.camera);
-		}
+		} 
 
-		this._debug.setText(`Velocity: ${Phaser.Math.roundTo(this._rocket.velocity.x, -2)}, ${Phaser.Math.roundTo(this._rocket.velocity.y, -2)}\nAcceleration: ${Phaser.Math.roundTo(this._rocket.acceleration.x, -2)}, ${Phaser.Math.roundTo(this._rocket.acceleration.y, -2)}\nThrust: ${Phaser.Math.roundTo(this._rocket.thrust.x, -2)}, ${Phaser.Math.roundTo(this._rocket.thrust.y, -2)}\nAltitude: ${Phaser.Math.roundTo(this._rocket.altitude, -2)}\nFuel: ${Phaser.Math.roundTo(this._rocket.fuel, -2)}`);
+		this._debug.setText(`Velocity: ${Phaser.Math.roundTo(this._rocket.velocity.getMagnitude(), -2)} (${Phaser.Math.roundTo(this._rocket.velocity.x, -2)}, ${Phaser.Math.roundTo(this._rocket.velocity.y, -2)})\nAcceleration: ${Phaser.Math.roundTo(this._rocket.acceleration.x, -2)}, ${Phaser.Math.roundTo(this._rocket.acceleration.y, -2)}\nThrust: ${Phaser.Math.roundTo(this._rocket.thrust.x, -2)}, ${Phaser.Math.roundTo(this._rocket.thrust.y, -2)}\nAltitude: ${Phaser.Math.roundTo(this._rocket.altitude, -2)}\nFuel: ${Phaser.Math.roundTo(this._rocket.fuel, -2)}`);
 	}
 
 	getTexture(name: string): PIXI.RenderTexture {

@@ -1,19 +1,14 @@
 import {GameManager} from "../states/game-manager"
 import {Controller} from "./controller"
 import {Stage} from "./stage"
+import {WorldObject} from "./world-object"
 
-export class RocketShip {
-	
-	private _group: Phaser.Group = null;
+export class RocketShip extends WorldObject {
+
 	private _root: Stage = null;
 	private _controller: Controller = null;
 
 	private _stages: Stage[] = [];
-
-	private _velocity: Phaser.Point = null;
-	private _acceleration: Phaser.Point = new Phaser.Point(0, 0);
-
-	private _direction: Phaser.Point = new Phaser.Point(0, -1);
 
 	private _throttle: number = 0;
 	private _pitch: number = 0;
@@ -21,29 +16,6 @@ export class RocketShip {
 	private _thrust: number = 50;
 
 	private _hasCameraFollow: boolean = false;
-
-	private _hasFired: boolean = false;
-
-	get x(): number {
-		return this._group.x;
-	}
-
-	get y(): number {
-		return this._group.y;
-	}
-
-	get velocity(): Phaser.Point {
-		return this._velocity;
-	}
-
-	get acceleration(): Phaser.Point {
-		return this._acceleration;
-	}
-
-	/** m */
-	get altitude(): number {
-		return this.y;
-	}
 
 	/** m/s2 */
 	get thrust(): Phaser.Point {
@@ -69,11 +41,13 @@ export class RocketShip {
 		return amt;
 	}
 
-	constructor(private _game: GameManager) {
-		this._controller = new Controller(this, _game.game);
+	constructor(game: GameManager) {
+		super(game);
+
+		this._controller = new Controller(this, this._game.game);
 		this._velocity = new Phaser.Point(0, 0);
 
-		this._group = _game.game.add.group(_game.world);
+		this._group = this._game.game.add.group(this._game.world);
 
 		//this._root = new Stage(this._game, this._group);
 		this._stages.push(new Stage(this._game, this._group, {texture: "capsule", dryMass: 10, fuelMass: 0, thrust: 0}));
@@ -106,11 +80,6 @@ export class RocketShip {
 		this._group.y = y - height;
 	}
 
-	protected move(x: number, y: number) {
-		this._group.x += x;
-		this._group.y += y;
-	}
-
 	update(delta: number) {
 		this._controller.update(delta);
 
@@ -133,30 +102,7 @@ export class RocketShip {
 			this._group.rotation = Math.atan2(this._direction.y, this._direction.x) + (Math.PI / 2);
 		}
 
-		// Acceleration from thrust
-		this._acceleration = this.thrustVector();
-
-		// Acceleration from drag
-		if (this._game.environment) {
-			var drag = this._game.environment.atmosphere.dragForce(this.y, this._velocity, 0.1);
-			//this._acceleration.add(drag.x, drag.y);
-		}
-
-		// TODO acceleration from aerodynamic force
-		
-		// Acceleration from gravity
-		// TODO use collisions
-		if (this._hasFired) {
-			var gravity = this._game.environment.gravity.getGravityVector(new Phaser.Point(this.x, this.y), 0);
-			this._acceleration.add(gravity.x, gravity.y);
-		}
-
-		this._acceleration.multiply(delta, delta);
-
-		this._velocity = this._velocity.add(this._acceleration.x, this._acceleration.y);
-
-		// Apply
-		this.move(this._velocity.x * delta, this._velocity.y * delta);
+		super.update(delta);
 
 		if (needStage) {
 			this.stage();
@@ -170,7 +116,7 @@ export class RocketShip {
 		current.forEach(stage => stage.throttle = throttle);
 
 		if (throttle != 0) {
-			this._hasFired = true;
+			this._holdGravity = false;
 		}
 	}
 
