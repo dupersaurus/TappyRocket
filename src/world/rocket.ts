@@ -2,6 +2,7 @@ import {GameManager} from "../states/game-manager"
 import {Controller} from "./controller"
 import {Stage} from "./stage"
 import {WorldObject} from "./world-object"
+import {Debris} from "./debris"
 
 export class RocketShip extends WorldObject {
 
@@ -47,7 +48,7 @@ export class RocketShip extends WorldObject {
 		this._controller = new Controller(this, this._game.game);
 		this._velocity = new Phaser.Point(0, 0);
 
-		this._group = this._game.game.add.group(this._game.world);
+		this._group = this._game.game.add.group(null);
 
 		//this._root = new Stage(this._game, this._group);
 		this._stages.push(new Stage(this._game, this._group, {texture: "capsule", dryMass: 10, fuelMass: 0, thrust: 0}));
@@ -60,11 +61,6 @@ export class RocketShip extends WorldObject {
 			this._stages[i].setPosition(0, lastY);
 			lastY += this._stages[i].height;
 		}
-	}
-
-	setPosition(x: number, y: number) {
-		this._group.x = x;
-		this._group.y = y;// - this._root.height / 2;
 	}
 
 	/**
@@ -166,6 +162,9 @@ export class RocketShip extends WorldObject {
 
 	protected stage() {
 		var stage = this._stages.pop();
-		stage.remove();
+		this._group.removeChild(stage.root);
+		
+		var debris = new Debris(this._game, stage, this);
+		debris.register();
 	}
 }

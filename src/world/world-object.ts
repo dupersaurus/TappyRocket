@@ -1,4 +1,5 @@
 import {GameManager} from "../states/game-manager"
+import {WorldManager} from "../managers/world-manager"
 
 export class WorldObject {
 	protected _group: Phaser.Group = null;
@@ -17,6 +18,14 @@ export class WorldObject {
 	/** y position */
 	get y(): number {
 		return this._group.y;
+	}
+
+	get rotation(): number {
+		return this._group.rotation;
+	}
+
+	get position(): Phaser.Point {
+		return new Phaser.Point(this.x, this.y);
 	}
 
 	/** Velocity, in m/s */
@@ -39,8 +48,17 @@ export class WorldObject {
 		return 1;
 	}
 
+	get group(): Phaser.Group {
+		return this._group;
+	}
+
 	constructor(protected _game: GameManager) {
 		
+	}
+
+	setPosition(x: number, y: number) {
+		this._group.x = x;
+		this._group.y = y;// - this._root.height / 2;
 	}
 
 	protected move(x: number, y: number) {
@@ -74,5 +92,19 @@ export class WorldObject {
 
 	protected thrustVector(): Phaser.Point {
 		return new Phaser.Point(0, 0);
+	}
+
+	/**
+	 * Register object with the world manager
+	 */
+	register() {
+		WorldManager.add(this);
+	}
+
+	remove() {
+		WorldManager.remove(this);
+
+		this._group.parent.removeChild(this._group.parent);
+		this._group.destroy(true);
 	}
 }

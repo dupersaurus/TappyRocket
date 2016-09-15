@@ -1,9 +1,12 @@
 import {TextureManager} from "../content/texture-manager"
 import {RocketShip} from "../world/rocket"
 import {Environment} from "../world/environment"
+import {WorldManager} from "../managers/world-manager"
 
 export class GameManager extends Phaser.State {
 	private _textureManager:TextureManager;
+
+	private _worldManager: WorldManager = null;
 
 	private _groundPlane: PIXI.Graphics = null;
 	private _debug: Phaser.Text = null;
@@ -30,6 +33,8 @@ export class GameManager extends Phaser.State {
 
 	create() {
 		this._textureManager = new TextureManager(this);
+		this._worldManager = new WorldManager(this.world);
+
 		this._groundPlane = this.game.add.graphics(0, 0, this.world);
 
 		this._groundPlane.beginFill(0x55bb00);
@@ -40,6 +45,7 @@ export class GameManager extends Phaser.State {
 
 		this._rocket = new RocketShip(this);
 		this._rocket.setFloorPosition(this.game.width / 2, -5);
+		this._rocket.register();
 
 		this.game.camera.bounds = null;
 
@@ -48,12 +54,10 @@ export class GameManager extends Phaser.State {
 	}
 
 	update() {
-		var rocketAlt = Phaser.Math.clamp(-this._rocket.y, 0, this._environment.atmosphere.height);
+		var rocketAlt = Phaser.Math.clamp(this._rocket.altitude, 0, this._environment.atmosphere.height);
 		this.game.stage.backgroundColor = Phaser.Color.interpolateColor(0x55ccff, 0x000000, this._environment.atmosphere.height, rocketAlt, 1);
 
-		if (this._rocket) {
-			this._rocket.update(this.game.time.elapsed / 1000);
-		}
+		this._worldManager.update(this.game.time.elapsed / 1000);
 
 		if (this._rocket.y <= 300) {
 			this._rocket.cameraFollow(this.camera);

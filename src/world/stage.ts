@@ -6,6 +6,10 @@ export class Stage {
 
 	private _dryMass: number = 20;
 
+	get root(): Phaser.Sprite {
+		return this._sprite;
+	}
+
 	/** Weight in kg */
 	get mass(): number {
 		return this._dryMass + this._fuel;
@@ -34,6 +38,10 @@ export class Stage {
 
 	set throttle(value: number) {
 		this._throttle = value;
+	}
+
+	get localPos(): Phaser.Point {
+		return new Phaser.Point(this._sprite.x, this._sprite.y);
 	}
 
 	constructor(private _game:GameManager, group: Phaser.Group, data: {texture: string, dryMass: number, fuelMass: number, thrust: number}) {
