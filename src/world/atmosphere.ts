@@ -6,6 +6,17 @@ export class Atmosphere {
 	/** @type {number} Max height of the atmosphere, m */
 	private _height: number = 0;
 
+	private _lowColor: number = 0x55ccff;
+	private _highColor: number = 0x000000;
+
+	get lowColor(): number {
+		return this._lowColor;
+	}
+
+	get highColor(): number {
+		return this._highColor;
+	}
+
 	constructor(density: number, height: number) {
 		this._density = density;
 		this._height = height;

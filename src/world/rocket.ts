@@ -36,6 +36,10 @@ export class RocketShip extends WorldObject {
 		var current = this.currentStage();
 		var amt = 0;
 
+		if (current.length == 0) {
+			return 0;
+		}
+
 		current.forEach((stage) => amt += stage.fuelPct);
 		amt /= current.length;
 

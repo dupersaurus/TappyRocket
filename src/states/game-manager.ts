@@ -2,11 +2,14 @@ import {TextureManager} from "../content/texture-manager"
 import {RocketShip} from "../world/rocket"
 import {Environment} from "../world/environment"
 import {WorldManager} from "../managers/world-manager"
+import {UIManager} from "../managers/ui-manager"
 
 export class GameManager extends Phaser.State {
 	private _textureManager:TextureManager;
 
 	private _worldManager: WorldManager = null;
+
+	private _ui: UIManager = null;
 
 	private _groundPlane: PIXI.Graphics = null;
 	private _debug: Phaser.Text = null;
@@ -41,6 +44,9 @@ export class GameManager extends Phaser.State {
 		this._groundPlane.drawRect(0, 0, 400, 500);
 		this._groundPlane.endFill();
 
+		this._ui = new UIManager(this.game);
+		this._ui.setAtmosphere(this._environment.atmosphere);
+
 		var pad = this.game.add.sprite(this.game.width / 2 - 25, -55, this._textureManager.getTexture("landingPad"), this._groundPlane);
 
 		this._rocket = new RocketShip(this);
@@ -49,7 +55,7 @@ export class GameManager extends Phaser.State {
 
 		this.game.camera.bounds = null;
 
-		this._debug = this.game.add.text(5, 5, "Hello", {fontSize: 12, fill: "#ff00ff"});
+		this._debug = this.game.add.text(5, 5, "", {fontSize: 12, fill: "#ff00ff"});
 		this._debug.fixedToCamera = true;
 	}
 
@@ -63,7 +69,10 @@ export class GameManager extends Phaser.State {
 			this._rocket.cameraFollow(this.camera);
 		} 
 
-		this._debug.setText(`Velocity: ${Phaser.Math.roundTo(this._rocket.velocity.getMagnitude(), -2)} (${Phaser.Math.roundTo(this._rocket.velocity.x, -2)}, ${Phaser.Math.roundTo(this._rocket.velocity.y, -2)})\nAcceleration: ${Phaser.Math.roundTo(this._rocket.acceleration.x, -2)}, ${Phaser.Math.roundTo(this._rocket.acceleration.y, -2)}\nThrust: ${Phaser.Math.roundTo(this._rocket.thrust.x, -2)}, ${Phaser.Math.roundTo(this._rocket.thrust.y, -2)}\nAltitude: ${Phaser.Math.roundTo(this._rocket.altitude, -2)}\nFuel: ${Phaser.Math.roundTo(this._rocket.fuel, -2)}`);
+		//this._debug.setText(`Velocity: ${Phaser.Math.roundTo(this._rocket.velocity.getMagnitude(), -2)} (${Phaser.Math.roundTo(this._rocket.velocity.x, -2)}, ${Phaser.Math.roundTo(this._rocket.velocity.y, -2)})\nAcceleration: ${Phaser.Math.roundTo(this._rocket.acceleration.x, -2)}, ${Phaser.Math.roundTo(this._rocket.acceleration.y, -2)}\nThrust: ${Phaser.Math.roundTo(this._rocket.thrust.x, -2)}, ${Phaser.Math.roundTo(this._rocket.thrust.y, -2)}\nAltitude: ${Phaser.Math.roundTo(this._rocket.altitude, -2)}\nFuel: ${Phaser.Math.roundTo(this._rocket.fuel, -2)}`);
+
+		this._ui.setAltitude(this._rocket.altitude);
+		this._ui.setFuelLevel(this._rocket.fuel);
 	}
 
 	getTexture(name: string): PIXI.RenderTexture {
