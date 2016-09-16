@@ -46,7 +46,7 @@ export class Stage {
 
 	constructor(private _game:GameManager, group: Phaser.Group, data: {texture: string, dryMass: number, fuelMass: number, thrust: number}) {
 		var texture = _game.getTexture(data.texture);
-		this._sprite = _game.game.add.sprite(texture.width * -0.5, texture.height * -0.5, texture, null, group);
+		this._sprite = _game.game.add.sprite(0, texture.height * -0.5, texture, null, group);
 
 		this._dryMass = data.dryMass;
 		this._fuel = this._startFuel = data.fuelMass;

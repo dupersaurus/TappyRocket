@@ -23,7 +23,7 @@ export class UIManager {
 		this._altitudeMarker.drawRect(-3, 0, 16, 3);
 		this._altitudeMarker.endFill();
 
-		this._fuelMarker = _game.add.graphics(_game.width / 2, 20, this._canvas);
+		this._fuelMarker = _game.add.graphics(_game.width / 2, 10, this._canvas);
 	}
 
 	setAtmosphere(atmosphere: Atmosphere) {
@@ -56,7 +56,7 @@ export class UIManager {
 	setFuelLevel(fuel: number) {
 		this._fuelMarker.clear();
 
-		var width = (this._game.width / 2 - 40) * fuel;
+		var width = (this._game.width / 2 - 20) * fuel;
 
 		this._fuelMarker.beginFill(0xfff6d5);
 		this._fuelMarker.drawRect(-width, 0, width * 2, 5);

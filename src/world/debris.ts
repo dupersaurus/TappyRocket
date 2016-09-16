@@ -15,8 +15,12 @@ export class Debris extends WorldObject {
 
 		this._group = this._game.game.add.group(null);
 
-		var position = Phaser.Point.add(parent.position, stage.localPos);
-		this.setPosition(position.x, position.y);
+		var local = stage.localPos;
+		var world = parent.position;
+		local.rotate(0, 0, parent.rotation);
+		world.add(local.x, local.y);
+
+		this.setPosition(world.x, world.y);
 		this._group.rotation = parent.rotation;
 
 		this._velocity = parent.velocity.clone();
